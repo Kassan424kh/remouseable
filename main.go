@@ -21,16 +21,14 @@ import (
 	"os"
 	"syscall"
 
+	remouseable "github.com/kevinconway/remouseable/pkg"
 	flag "github.com/spf13/pflag"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/crypto/ssh/terminal"
-
-	remouseable "github.com/kevinconway/remouseable/pkg"
 )
 
 func main() {
-
 	driver := &remouseable.RobotgoDriver{}
 
 	fs := flag.NewFlagSet("remouseable", flag.ExitOnError)

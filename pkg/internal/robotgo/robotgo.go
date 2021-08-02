@@ -22,6 +22,9 @@ Installation:
 */
 package robotgo
 
+
+
+
 /*
 //#if defined(IS_MACOSX)
 	#cgo darwin CFLAGS: -x objective-c -Wno-deprecated-declarations
@@ -40,6 +43,7 @@ package robotgo
 import "C"
 
 import (
+	"math"
 	"time"
 	"unsafe"
 )
@@ -161,6 +165,16 @@ func GetXDisplayName() string {
 	return gname
 }
 
+func Sgn(a float64) int {
+	switch {
+	case a < 0:
+		return -1
+	case a > 0:
+		return +1
+	}
+	return 0
+}
+
 /*
 .___  ___.   ______    __    __       _______. _______
 |   \/   |  /  __  \  |  |  |  |     /       ||   ____|
@@ -193,6 +207,26 @@ func CheckMouse(btn string) C.MMMouseButton {
 func MoveMouse(x, y int) {
 	// C.size_t  int
 	Move(x, y)
+}
+
+var (
+	lastPointerMovementX int = -1
+	lastPointerMovementY int = -1
+	lastMouseMovementX   int = -1
+	lastMouseMovementY   int = -1
+)
+
+func PointerMovementSpeedXY(x, y int) map[string]int {
+	var movementX = x - lastMouseMovementX
+	var movementY = y - lastMouseMovementY
+
+	var movementSpeedX = math.Sqrt(float64(movementX * movementX))
+	var movementSpeedY = math.Sqrt(float64(movementY * movementY))
+
+	return map[string]int{
+		"x": int(movementSpeedX),
+		"y": int(movementSpeedY),
+	}
 }
 
 // Move move the mouse
