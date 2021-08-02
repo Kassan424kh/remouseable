@@ -15,7 +15,7 @@ type LazyPoint struct {
  *
  * @param {Point} point
  */
-func (l LazyPoint) Update(p *Point.Point) {
+func (l LazyPoint) Update(p Point.Point) {
 	l.X = p.X
 	l.Y = p.Y
 }
@@ -40,7 +40,7 @@ func (l LazyPoint) MoveByAngle(angle, distance float64) {
  * @param {Point} point
  * @returns {boolean}
  */
-func (l LazyPoint) EqualsTo(p *Point.Point) bool {
+func (l LazyPoint) EqualsTo(p Point.Point) bool {
 	return l.X == p.X && l.Y == p.Y
 }
 
@@ -50,7 +50,7 @@ func (l LazyPoint) EqualsTo(p *Point.Point) bool {
  * @param {Point} point
  * @returns {Point}
  */
-func (l LazyPoint) GetDifferenceTo(p *Point.Point) Point.Point {
+func (l LazyPoint) GetDifferenceTo(p Point.Point) Point.Point {
 	newPoint := Point.Point{
 		X: l.X - p.X,
 		Y: l.Y - p.Y,
@@ -65,7 +65,7 @@ func (l LazyPoint) GetDifferenceTo(p *Point.Point) Point.Point {
  * @param {Point} point
  * @returns {Point}
  */
-func (l LazyPoint) GetDistanceTo(p *Point.Point) float64 {
+func (l LazyPoint) GetDistanceTo(p Point.Point) float64 {
 	diff := l.GetDifferenceTo(p)
 
 	return math.Sqrt(math.Pow(diff.X, 2) + math.Pow(diff.Y, 2))
@@ -77,7 +77,7 @@ func (l LazyPoint) GetDistanceTo(p *Point.Point) float64 {
  * @param {Point} point
  * @returns {Point}
  */
-func (l LazyPoint) getAngleTo(p *Point.Point) float64 {
+func (l LazyPoint) GetAngleTo(p Point.Point) float64 {
 	diff := l.GetDifferenceTo(p)
 
 	return math.Atan2(diff.Y, diff.X)
