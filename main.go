@@ -22,6 +22,7 @@ import (
 	"syscall"
 
 	remouseable "github.com/kevinconway/remouseable/pkg"
+
 	flag "github.com/spf13/pflag"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
@@ -38,14 +39,14 @@ func main() {
 	tmpScreenWidth, tmpScreenHeight, _ := driver.GetSize()
 	screenHeight := fs.Int("screen-height", tmpScreenHeight, "The max units per millimeter of the host screen height. Probably don't change this.")
 	screenWidth := fs.Int("screen-width", tmpScreenWidth, "The max units per millimeter of the host screen width. Probably don't change this.")
-	sshIP := fs.String("ssh-ip", "10.11.99.1:22", "The host and port of a tablet.")
+	sshIP := fs.String("ssh-ip", "192.168.0.102:22", "The host and port of a tablet.")
 	sshUser := fs.String("ssh-user", "root", "The ssh username to use when logging into the tablet.")
-	sshPassword := fs.String("ssh-password", "", "An optional password to use when ssh-ing into the tablet. Use - for a prompt rather than entering a value. If not given then public/private keypair authentication is used.")
+	sshPassword := fs.String("ssh-password", "iuhliwJF8P", "An optional password to use when ssh-ing into the tablet. Use - for a prompt rather than entering a value. If not given then public/private keypair authentication is used.")
 	sshSocket := fs.String("ssh-socket", os.Getenv("SSH_AUTH_SOCK"), "Path to the SSH auth socket. This must not be empty if using public/private keypair authentication.")
-	evtFile := fs.String("event-file", "/dev/input/event0", "The path on the tablet from which to read evdev events. Probably don't change this.")
+	evtFile := fs.String("event-file", "/dev/input/event1", "The path on the tablet from which to read evdev events. Probably don't change this.")
 	debugEvents := fs.Bool("debug-events", false, "Stream hardware events from the tablet instead of acting as a mouse. This is for debugging.")
 	disableDrag := fs.Bool("disable-drag-event", false, "Disable use of the custom OSX drag event. Only use this drawing on an Apple device is not working as expected.")
-	pressureThreshold := fs.Int("pressure-threshold", 1000, "Change the click detection sensitivity. 1000 is when the pen makes contact with the tablet. Set higher to require more pen pressure for a click.")
+	pressureThreshold := fs.Int("pressure-threshold", 10, "Change the click detection sensitivity. 1000 is when the pen makes contact with the tablet. Set higher to require more pen pressure for a click.")
 	_ = fs.Parse(os.Args[1:])
 
 	if *sshPassword == "-" {

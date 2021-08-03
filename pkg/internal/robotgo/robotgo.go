@@ -22,9 +22,6 @@ Installation:
 */
 package robotgo
 
-
-
-
 /*
 //#if defined(IS_MACOSX)
 	#cgo darwin CFLAGS: -x objective-c -Wno-deprecated-declarations
@@ -46,6 +43,9 @@ import (
 	"math"
 	"time"
 	"unsafe"
+
+	LazyBrush "github.com/Kassan424kh/golang-lazy-brush/lazy-brush"
+	Point "github.com/Kassan424kh/golang-lazy-brush/point"
 )
 
 const (
@@ -229,10 +229,15 @@ func PointerMovementSpeedXY(x, y int) map[string]int {
 	}
 }
 
+var lb = LazyBrush.Init()
+var radius float64 = 10
+
 // Move move the mouse
 func Move(x, y int) {
-	cx := C.int32_t(x)
-	cy := C.int32_t(y)
+	lb.SetRadius(radius)
+	lb.Update(Point.Point{X: float64(x), Y: float64(y)}, false)
+	cx := C.int32_t(lb.Brush.X)
+	cy := C.int32_t(lb.Brush.Y)
 	C.move_mouse(cx, cy)
 }
 
@@ -243,10 +248,13 @@ func DragMouse(x, y int, args ...string) {
 
 // Drag drag the mouse
 func Drag(x, y int, args ...string) {
+
 	var button C.MMMouseButton = C.LEFT_BUTTON
 
-	cx := C.int32_t(x)
-	cy := C.int32_t(y)
+	lb.SetRadius(radius)
+	lb.Update(Point.Point{X: float64(x), Y: float64(y)}, false)
+	cx := C.int32_t(lb.GetBrushCoordinates()["X"])
+	cy := C.int32_t(lb.GetBrushCoordinates()["Y"])
 
 	if len(args) > 0 {
 		button = CheckMouse(args[0])

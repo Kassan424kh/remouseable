@@ -3,6 +3,7 @@ module github.com/kevinconway/remouseable
 go 1.16
 
 require (
+	github.com/Kassan424kh/golang-lazy-brush v0.0.0-20210802230637-77d8f95196ef // indirect
 	github.com/dave/jennifer v1.4.1
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/mock v1.6.0
