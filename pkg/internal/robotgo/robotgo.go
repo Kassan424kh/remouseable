@@ -129,6 +129,7 @@ func Scale() int {
 	}
 
 	x := ScaleX()
+
 	return dpi[x]
 }
 
@@ -175,6 +176,10 @@ func Sgn(a float64) int {
 	return 0
 }
 
+func makeTimestamp() int64 {
+	return time.Now().UnixNano() / int64(time.Millisecond)
+}
+
 /*
 .___  ___.   ______    __    __       _______. _______
 |   \/   |  /  __  \  |  |  |  |     /       ||   ____|
@@ -210,10 +215,9 @@ func MoveMouse(x, y int) {
 }
 
 var (
-	lastPointerMovementX int = -1
-	lastPointerMovementY int = -1
-	lastMouseMovementX   int = -1
-	lastMouseMovementY   int = -1
+	lastMouseMovementX    int   = -1
+	lastMouseMovementY    int   = -1
+	lastPenHoverTimestamp int64 = -1
 )
 
 func PointerMovementSpeedXY(x, y int) map[string]int {

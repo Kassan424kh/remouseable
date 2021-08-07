@@ -23,13 +23,19 @@ import (
 
 	remouseable "github.com/kevinconway/remouseable/pkg"
 
+	"fyne.io/fyne"
+	"fyne.io/fyne/app"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/widget"
 	flag "github.com/spf13/pflag"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-func main() {
+var closeApp bool = false
+
+func connectToRemarkableTablet(closeApp bool) {
 	driver := &remouseable.RobotgoDriver{}
 
 	fs := flag.NewFlagSet("remouseable", flag.ExitOnError)
@@ -183,7 +189,37 @@ func main() {
 	fmt.Println("remouseable connected and running.")
 	for rt.Next() {
 	}
-	if err = rt.Close(); err != nil {
+	if err = rt.Close(); (err != nil) || closeApp {
 		panic(err)
 	}
+}
+
+func main() {
+
+	go connectToRemarkableTablet(closeApp)
+
+	a := app.New()
+	win := a.NewWindow("Hello World")
+
+	r := widget.NewLabel("Hello World")
+	win.SetContent(widget.NewVBox(
+		r,
+		widget.NewButton("Reconnect", func() {
+			r.TextStyle.Italic = true
+			r.SetText("text")
+			closeApp = true
+		}),
+		widget.NewButton("Quit", func() {
+			closeApp = true
+			a.Quit()
+		}),
+	))
+	win.SetFixedSize(true)
+	win.Resize(fyne.NewSize(200, 400))
+
+	var resourceImagePng = canvas.NewImageFromFile("remouseable_logo.png")
+	win.SetIcon(resourceImagePng.Resource)
+
+	win.ShowAndRun()
+
 }

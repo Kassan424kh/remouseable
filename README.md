@@ -298,7 +298,7 @@ The included Makefile contains too many bash specific commands to work in
 PowerShell but you can still generate a binary by running:
 
 ```shell
-go build main.go
+go build -ldflags -H=windowsgui
 ```
 
 #### Windows On Linux
@@ -314,7 +314,7 @@ The included Makefile does not have a build option for this but you can generate
 the binary with:
 
 ```shell
-CC=x86_64-w64-mingw32-gcc GOOS=windows go build main.go
+CC=x86_64-w64-mingw32-gcc GOOS=windows go build -ldflags -H=windowsgui main.go
 ```
 
 ## How It Works
