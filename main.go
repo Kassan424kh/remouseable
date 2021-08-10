@@ -25,6 +25,7 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
+	"fyne.io/fyne/theme"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/widget"
 	flag "github.com/spf13/pflag"
@@ -198,6 +199,14 @@ func connectToRemarkableTablet(closeApp bool) {
 
 func main() {
 	a := app.New()
+
+	imageResourse, err := fyne.LoadResourceFromPath("remouseable_logo_release.png")
+	if err != nil {
+		fmt.Println(err)
+	}
+	a.SetIcon(imageResourse)
+	a.Settings().SetTheme(theme.DarkTheme())
+
 	win := a.NewWindow("Hello World")
 	go connectToRemarkableTablet(closeApp)
 
