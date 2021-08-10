@@ -59,7 +59,7 @@ func connectToRemarkableTablet(closeApp bool) {
 		fmt.Print("Enter Password: ")
 		pwd, err := terminal.ReadPassword(int(syscall.Stdin))
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
 		}
 		*sshPassword = string(pwd)
 	}
@@ -73,7 +73,7 @@ func connectToRemarkableTablet(closeApp bool) {
 	if *sshPassword == "" {
 		agentFd, err := net.Dial("unix", *sshSocket)
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
 		}
 		defer agentFd.Close()
 
@@ -90,21 +90,21 @@ func connectToRemarkableTablet(closeApp bool) {
 
 	client, err := ssh.Dial("tcp", *sshIP, sshConfig)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
 	sesh, err := client.NewSession()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	defer sesh.Close()
 
 	pipe, err := sesh.StdoutPipe()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	if err = sesh.Start(fmt.Sprintf("cat %s", *evtFile)); err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	if *debugEvents {
 		it := &remouseable.SelectingEvdevIterator{
@@ -126,7 +126,7 @@ func connectToRemarkableTablet(closeApp bool) {
 			fmt.Print("\n")
 		}
 		if err = it.Close(); err != nil {
-			panic(err.Error())
+			fmt.Println(err.Error())
 		}
 		return
 	}
@@ -177,7 +177,7 @@ func connectToRemarkableTablet(closeApp bool) {
 			ScreenHeight: *screenHeight,
 		}
 	default:
-		panic(fmt.Sprintf("unknown orienation selection %s", *orientation))
+		fmt.Println(fmt.Sprintf("unknown orienation selection %s", *orientation))
 	}
 
 	rt := &remouseable.Runtime{
@@ -189,31 +189,36 @@ func connectToRemarkableTablet(closeApp bool) {
 	fmt.Println("remouseable connected and running.")
 	for rt.Next() {
 	}
-	if err = rt.Close(); (err != nil) || closeApp {
-		panic(err)
+	if err = rt.Close(); err != nil {
+		fmt.Println("***********")
+		fmt.Println(err)
 	}
+
 }
 
 func main() {
-
-	go connectToRemarkableTablet(closeApp)
-
 	a := app.New()
 	win := a.NewWindow("Hello World")
+	go connectToRemarkableTablet(closeApp)
 
 	r := widget.NewLabel("Hello World")
 	win.SetContent(widget.NewVBox(
 		r,
+		widget.NewButton("Connect", func() {
+			closeApp = false
+		}),
 		widget.NewButton("Reconnect", func() {
 			r.TextStyle.Italic = true
 			r.SetText("text")
 			closeApp = true
+
 		}),
 		widget.NewButton("Quit", func() {
 			closeApp = true
 			a.Quit()
 		}),
 	))
+
 	win.SetFixedSize(true)
 	win.Resize(fyne.NewSize(200, 400))
 
